@@ -7,15 +7,6 @@ import { getProjects, getProjectsByCareerId, getProject,
 import { action as toggleMenu } from 'redux-burger-menu';
 
 import MainContainer from '../containers/MainContainer'
-import ProjectList from '../components/ProjectList';
-import ProjectView from '../components/ProjectView';
-import BlogList from '../components/BlogList';
-import BlogView from '../components/BlogView';
-import CareerTimeline from '../components/CareerTimeline';
-import CareerView from '../components/CareerView';
-import AboutWebsite from '../components/AboutWebsite';
-
-import routes from '../routes';
 
 class List extends PureComponent{
 
@@ -38,29 +29,10 @@ class List extends PureComponent{
     err - error object
   */
   static async getInitialProps ({ req, reduxStore, pathname, params, query, asPath }) {
-    await reduxStore.dispatch(toggleMenu(false))
-
-    const route = routes.match(asPath);
-    const PostTypeName = route.route.name;
-
-
+    const PostTypeName = query.posttype;
 
     if(PostTypeName == 'projects'){
         await reduxStore.dispatch(getProjects({per_page:99, order_by: 'menu_order'}))
-    }else if (PostTypeName == 'career'){
-        await reduxStore.dispatch(getExperiences({per_page: 99}))
-    }else if (PostTypeName == 'blog'){
-        await reduxStore.dispatch(getBlogList({per_page: 99}))
-    }else if(PostTypeName == 'projectview'){
-        await reduxStore.dispatch(getProject({slug: query.slug}))
-    }else if(PostTypeName == 'careerview'){
-        await reduxStore.dispatch(getExperience({slug: query.slug}))
-        if(reduxStore.getState().reducer && reduxStore.getState().reducer.experience[0]){
-          const careerId = reduxStore.getState().reducer.experience[0].id;
-          await reduxStore.dispatch(getProjectsByCareerId({per_page: 4, career_id: careerId}))
-        }
-    }else if(PostTypeName == 'blogview'){
-        await reduxStore.dispatch(getBlog({slug: query.slug}))
     }
 
     return { PostTypeName: PostTypeName };

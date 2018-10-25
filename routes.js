@@ -8,7 +8,9 @@ const routes = module.exports = nextRoutes()
 
 // register additional routes if needed
 routes
-.add({name: 'index', pattern: '/', page: 'index'})
-.add({name: 'projects', pattern: '/projects', page: 'page'})
-.add({name: 'projectview', pattern: '/projects/:slug', page: 'page'})
-
+.add('/', '/', 'index')
+.add('posttype', '/:posttype', 'post')
+.add('posttype/:category', '/:posttype/:category', 'post')
+.add('posttype/:category/:slug', '/:posttype/:category/:slug', 'post')
+.add('posttype/:category/:slug/:twoslug', '/:posttype/:category/:slug/:twoslug', 'post')
+.add('posttype/:category/:slug/:twoslug/:threeslug', '/:posttype/:category/:slug/:twoslug/:threeslug', 'post')
