@@ -1,9 +1,8 @@
 import { Component } from 'react'
+import ErrorComponent from '../components/Error'
 
 export default class ErrorPage extends Component {
   render () {
-    return (
-        <div>Design your error page</div>
-    )
+    return ( <ErrorComponent /> )
   }
 }

@@ -1,7 +1,7 @@
 import Document, { Head, Main, NextScript } from 'next/document'
 import getConfig from 'next/config'
 
-import GoogleTagManager from '../components/GoogleTagManager';
+import GoogleTagManager from '../components/GoogleScripts/GoogleTagManager';
 
 const { publicRuntimeConfig } = getConfig();
 

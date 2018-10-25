@@ -1,25 +1,25 @@
-import { GET_FOOD_ARCHIVE, 
-        GET_FOOD_POST,
-        GET_FOOD_ARCHIVE_BY_CATEGORY 
-    } from '../constants';
+import { GET_BURGER_MENU, 
+         GET_SEARCH,
+         GET_PAGE
+    } from '../actionTypes';
 
 export default (state = {}, action) => {
     // For immutability, it's a must to pass a new object every time
 
     switch (action.type) {
-    case GET_FOOD_ARCHIVE:
+    case GET_BURGER_MENU :
         return  Object.assign({}, state, {
-                    foodList: action.foodArchive
+                    burgerMenu: action.burgerMenu
                 });
     
-    case GET_FOOD_POST:
+    case GET_SEARCH :
         return  Object.assign({}, state, {
-                    foodObj: action.foodObj
+                    search: action.search
                 });
 
-    case GET_FOOD_ARCHIVE_BY_CATEGORY:
+    case GET_PAGE :
         return  Object.assign({}, state, {
-                    foodListCategory: action.foodArchiveCategory
+                    pageObj: action.pageObj
                 });
 
     default:

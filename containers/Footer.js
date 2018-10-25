@@ -1,7 +1,5 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import Socials from '../components/Socials';
-import { Link } from '../routes'
 
 class FooterContainer extends Component {
 
@@ -14,12 +12,15 @@ class FooterContainer extends Component {
 
 
  }
+
 }
 
-
+// Map the state needed in this container
 const mapStateToProps = state => ({
  ...state
 })
+
+// Map the state needed in this container
 const mapDispatchToProps = dispatch => ({
 
 })

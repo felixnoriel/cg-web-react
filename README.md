@@ -17,7 +17,9 @@ Files / Folder structure
 - store/actions - actions
 - store/reducers - reducers
 - components - reusable / dumb components, no access to store, only gets data/functions from props that's been passed to it
+	- this is where you produce HTML elements based from the props given from the containers
 - containers - smart components, has access to store, all API requests should be done here, pass the functions to components if needed (eg: getting comments, changing store state)
+	- containers should not produce any HTML elements, only pass data to components
 - pages - files that are mapped in routes.js, entry point to an actual view component
 	- all data that needs to be SEO optimised should be fetched here
 - static - static files (robots.txt, sitemap.xml, etc), images, etc

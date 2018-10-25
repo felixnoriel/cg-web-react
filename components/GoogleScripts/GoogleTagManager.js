@@ -1,7 +1,7 @@
-import { PureComponent } from 'react';
+import { Component } from 'react';
 import gtmParts from 'react-google-tag-manager';
 
-class GoogleTagManager extends PureComponent {
+class GoogleTagManager extends Component {
     componentDidMount() {
         const dataLayerName = this.props.dataLayerName || 'dataLayer';
         const scriptId = this.props.scriptId || 'react-google-tag-manager-gtm';
