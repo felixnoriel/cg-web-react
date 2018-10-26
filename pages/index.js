@@ -1,7 +1,8 @@
 import { Component } from 'react'
 
 import config from '../helpers/config';
-// import { getArchive } from '../store/actions/action'
+
+import { getBurgerMenu } from '../store/actions/actions';
 
 import mapComponentToPostType from './_custom';
 
@@ -20,10 +21,12 @@ class Index extends Component{
     jsonPageRes - fetch response ( client only)
     err - error object
   */
+
   static async getInitialProps ({ req, reduxStore, pathname, params, query }) {
 
     // All data that will be used for SSR (needed for SEO) needs to be fetch here
-    // await reduxStore.dispatch(getExperiences({per_page: 3}))
+    // fetch burger menu
+    await reduxStore.dispatch(getBurgerMenu());
     // await reduxStore.dispatch(getProjects({per_page:3, order_by: 'menu_order'}))
 
     return { posttype: 'home' };

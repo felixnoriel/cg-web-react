@@ -1,16 +1,12 @@
 import { combineReducers } from 'redux';
-import { food,
-		 dessert,
-		 drinks,
-		 events 
-			} from './archiveAndPosts';
-
+import menu from './menu';
+import events from './events';
 import settings from './settings';
+import location from './location';
 
 export default combineReducers({
-    food: food,
-    drinks: drinks,
-    dessert: dessert,
-    events: events,
-    settings: settings,
+    menu,
+    events,
+    location,
+    settings,
 });

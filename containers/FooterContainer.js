@@ -16,7 +16,8 @@ class FooterContainer extends Component {
 }
 
 // Map the state needed in this container
-const mapStateToProps = state => ({
+const mapStateToProps = state => ({ 
+ // Only map state needed in this container
  ...state
 })
 

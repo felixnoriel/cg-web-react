@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 
-import Events from '../../components/Events/EventsExample';
+import Events from '../components/Events/EventsExample';
 
 class EventsContainer extends Component{
 
@@ -14,6 +14,7 @@ class EventsContainer extends Component{
 }
 
 const mapStateToProps = state => ({
+  // Only map state needed in this container
   events: state.events,
 })
 

@@ -1,0 +1,22 @@
+.burger-menu-wrapper{
+    position: relative;
+
+    .btn-burger-menu{
+        position: absolute;
+        top: 0.5rem;
+        left: 1rem
+    }
+
+    .burger-menu-container{
+        position: absolute;
+        top: 2rem;
+        left: 1rem;
+        display: none;
+        background:#eee;
+        padding: 1rem 2rem;
+    }
+
+    .burger-menu-container.open{
+        display: block;
+    }
+}

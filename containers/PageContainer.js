@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 
-import Page from '../components/Home';
+import Page from '../components/Page/Page';
 
 class PageContainer extends Component{
 
@@ -15,6 +15,7 @@ class PageContainer extends Component{
 }
 
 const mapStateToProps = state => ({
+  // Only map state needed in this container
   page: state.settings.pageObj,
 })
 

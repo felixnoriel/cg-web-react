@@ -1,28 +1,25 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 
-import Home from '../components/Home';
+import Home from '../components/Home/Home';
 
 class HomeContainer extends Component{
 
 	render(){
-		const { events, food, drinks, dessert } = this.props;
-		
+		const { events, menu } = this.props;
+
 		// pass needed data to events as props
 		return ( <Home events={events} 
-					   food={food} 
-					   drinks={drinks} 
-					   dessert={dessert} 
+					   menu={menu}
 					  />
 		);
 	}
 }
 
 const mapStateToProps = state => ({
+  // Only map state needed in this container
   events: state.events,
-  food: state.food,
-  drinks: state.drinks,
-  dessert: state.dessert,
+  menu: state.menu,
 })
 
 // add comments functionality later

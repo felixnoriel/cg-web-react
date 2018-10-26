@@ -3,7 +3,7 @@ import { GET_BURGER_MENU,
          GET_PAGE
     } from '../actionTypes';
 
-export default (state = {}, action) => {
+const settings = (state = {}, action) => {
     // For immutability, it's a must to pass a new object every time
 
     switch (action.type) {
@@ -26,3 +26,5 @@ export default (state = {}, action) => {
         return state
     }
 }
+
+export default settings;
