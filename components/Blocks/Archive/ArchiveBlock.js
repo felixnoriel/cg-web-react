@@ -1,10 +1,20 @@
 import { Component } from 'react';
-import './ArchiveBlock.scss';
+
+import './Archive.scss';
+import ArchiveSingleBlock from './ArchiveSingleBlock';
 
 class ArchiveBlock extends Component{
 
     render(){
-        return (<div>Archive Block</div>)
+
+    	const { archive } = this.props;
+    	const archiveList = archive.map( archiveItem => {
+    		return <ArchiveSingleBlock key={archiveItem.id} archiveItem={archiveItem}/>
+    	})
+       	return (<div className="archive-container">
+       			 { archiveList }
+       			</div>
+       	)
     }
 }
 

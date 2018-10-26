@@ -4,93 +4,108 @@ import { fetchArchive,
 
 import { GET_ARCHIVE, 
          GET_POST,
+         GET_PAGE,
          GET_BURGER_MENU,
          GET_SEARCH,
-         GET_COMMENTS
+         GET_COMMENTS,
+         SET_SETTINGS
       } from '../actionTypes';
 
 
-// This action will return a list of CATEGORY under a parent category/post type
-export const getCategoryArchive = (posttype, params) => async dispatch => {
-    // This dispatch is for loading (showing a loader)
-    // Implement further if needed
-    dispatch({
-        type: GET_ARCHIVE.menu[params.category], // dynamic action type to cater for post types
-        posttype: 'menu',
-        archive: [],
-    })
-
-    const archivePromise = await fetchArchive(posttype, params);
-    
-    try{
-    const archive = await archivePromise.json();
-
-    dispatch({
-        type: GET_ARCHIVE.menu[params.category],
-        posttype: 'menu',
-        archive: archive,
-    })
-    }catch(err){
-        // Dispatch error message and notify front end
-        dispatch({
-            type: GET_ARCHIVE.menu[params.category],
-            errror: err
-        })
-    }    
-}
-
 // This action will return a list of ITEMS under a category / post type
-export const getArchive = (posttype, params) => async dispatch => {
+export const getArchive = (route, posttype, category = null, subCategory = null, params = null) => async dispatch => {
+
     // This dispatch is for loading (showing a loader)
     // Implement further if needed
      dispatch({
-      type: GET_ARCHIVE[posttype], // dynamic action type to cater for post types
+      type: GET_ARCHIVE, // dynamic action type to cater for post types
       posttype: posttype,
+      category: category,
+      subCategory: subCategory,
       archive: [],
      })
 
-     const archivePromise = await fetchArchive(posttype, params);
+     const archivePromise = await fetchArchive(route, params);
      
      try{
         const archive = await archivePromise.json();
 
         dispatch({
-            type: GET_ARCHIVE[posttype],
+            type: GET_ARCHIVE,
             posttype: posttype,
+            category: category,
+            subCategory: subCategory,
             archive: archive,
         })
      }catch(err){
         // Dispatch error message and notify front end
         dispatch({
-            type: GET_ARCHIVE[posttype],
-            errror: err
+            type: GET_ARCHIVE,
+            category: category,
+            subCategory: subCategory,
+            archive: [],
+            error: err,
         })
      }    
 }
 
-export const getPost = (posttype, params) => async dispatch => {
+export const getPost = (posttype, slug, params = null) => async dispatch => {
     // This dispatch is for loading (showing a loader)
     // Implement further if needed
     dispatch({
-        type: GET_POST[posttype],
+        type: GET_POST,
         posttype: posttype,
+        slug: slug,
         post: {}
     })
 
-    const postPromise = await fetchPost(posttype, params);
+    const postPromise = await fetchPost(posttype, slug, params);
     try{
         const post = await postPromise.json();
 
         dispatch({
-            type: GET_POST[posttype],
+            type: GET_POST,
             posttype: posttype,
+            slug: slug,
             post: post
         })
     }catch(err){
         // Dispatch error message and notify front end
         dispatch({
-            type: GET_POST[posttype],
-            error: err
+            type: GET_POST,
+            posttype: posttype,
+            slug: slug,
+            post: {},
+            error: err,
+        })
+    }   
+}
+
+export const getPage = (slug, params = null) => async dispatch => {
+    // This dispatch is for loading (showing a loader)
+    // Implement further if needed
+    dispatch({
+        type: GET_PAGE,
+        slug: slug,
+        page: {}
+    })
+
+    const pagePromise = await fetchPost('pages', slug, params);
+    try{
+        const page = await pagePromise.json();
+
+        dispatch({
+            type: GET_PAGE,
+            slug: slug,
+            page: page
+        })
+    }catch(err){
+        // Dispatch error message and notify front end
+        dispatch({
+            type: GET_PAGE,
+            slug: slug,
+            page: {},
+            error: err,
         })
     }   
 }
@@ -129,6 +144,12 @@ export const getSearch = ({q}) => async dispatch => {
 
 }
 
+export const setWebSettings = (params) => async dispatch => {
+    dispatch({
+        type: SET_SETTINGS,
+        params: params
+    })
+}
 
 /* This is not a redux action, only used to check if a subcategory exists */
 export const getCategoriesByPostType = async (route) => {

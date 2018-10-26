@@ -1,12 +1,10 @@
 import { combineReducers } from 'redux';
-import menu from './menu';
-import events from './events';
+import archive from './archive';
+import post from './post';
 import settings from './settings';
-import location from './location';
 
 export default combineReducers({
-    menu,
-    events,
-    location,
+    archive,
+    post,
     settings,
 });

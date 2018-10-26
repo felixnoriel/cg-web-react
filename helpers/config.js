@@ -8,5 +8,5 @@ console.log(`publicRuntimeConfig.node_env : ${publicRuntimeConfig.node_env} | en
 export default {
     endpoint: endpointWpAPI, 
     sitename: '',
-    PostTypes: ['menu', 'events', 'locations'],
+    PostTypes: ['menu', 'events', 'location'],
 }

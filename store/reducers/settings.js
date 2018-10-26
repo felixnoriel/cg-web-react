@@ -1,6 +1,7 @@
 import { GET_BURGER_MENU, 
          GET_SEARCH,
-         GET_PAGE
+         GET_PAGE,
+         SET_SETTINGS,
     } from '../actionTypes';
 
 const settings = (state = {}, action) => {
@@ -17,9 +18,17 @@ const settings = (state = {}, action) => {
                     search: action.search
                 });
 
+    case SET_SETTINGS : 
+        let settingsObj = {};
+        for(let i in action.params){
+            settingsObj[i] = action.params[i];
+        }
+        return Object.assign({}, state, { globalSettings: settingsObj})
+        
+    // you can put PAGE to a different reducer than settings, implement later on
     case GET_PAGE :
         return  Object.assign({}, state, {
-                    pageObj: action.pageObj
+                    page: action.page
                 });
 
     default:

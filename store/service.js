@@ -15,12 +15,12 @@ export async function fetchArchive(posttype, params){
     }
 }
 
-export async function fetchPost(posttype, params){ // params is an object
+export async function fetchPost(posttype, slug, params){ // params is an object
     // getting a post by post type 
     // eg: food?slug=cheeseburger
     const filter = filterParams(params);
     try{
-        const res =  await fetch(`${config.endpoint}/${posttype}?_embed=true${filter}`);
+        const res =  await fetch(`${config.endpoint}/${posttype}?slug=${slug}&_embed=true${filter}`);
         return res;
     }catch(err){
         return err;

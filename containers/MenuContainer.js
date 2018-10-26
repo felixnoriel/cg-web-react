@@ -1,35 +1,23 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 
-import Menu from '../components/Menu/MenuExample';
+import Menu from '../components/Menu/Menu';
 
 class MenuContainer extends Component{
 
 	render(){
-		const { menu } = this.props;
+		const { menuArchive, menuPost } = this.props;
         
-        if(!menu){
-            return 'no data menu';
-        }
-        console.log(menu);
-        if (menu.menuArchive) {
-            return ( <Menu menu={menu} />); // Return menu container
-        }
-        if(menu.foodArchive){
-
-        }
 		// pass needed data to Menu as props
-		return ( <Menu menu={menu} />);
+		return ( <Menu menu={menuArchive} menuPost={menuPost} />);
 	}
-}
-
-const mapMenuComponent = () => {
-
 }
 
 const mapStateToProps = state => ({
   // Only map state needed in this container
-  menu: state.menu
+  menuArchive: state.archive.menu,
+  menuPost: state.post.menu,
+  globalSettings: state.settings.globalSettings,
 })
 
 // add comments functionality later

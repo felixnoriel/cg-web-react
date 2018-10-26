@@ -17,6 +17,7 @@ export function modifyWordpressObject(post){
     media: mediaObj,
     imgSrcSet: getImageSrcSet(mediaObj),
     featuredImgSrc: getImageUrl(mediaObj, 'medium_large'), // 'medium_large' is for the size of image to be returned
+    devHrefLink: getReplacedDevLink(modified.link), // change later on
   }
 
   return modified;
@@ -219,6 +220,12 @@ function getImageSrcSet(media){
     return img;
 }
 
+function getReplacedDevLink(url){
+  if(!url || url === ""){
+    return "";
+  }
+  return url.replace("http://13.239.94.225", "").replace("13.239.94.225", "");
+}
 
 // Implement when you need to change the URLS based on the enviroment eg(.net for staging, .com for prod)
 function getReplacedUrlLink(url){

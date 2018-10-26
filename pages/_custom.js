@@ -1,10 +1,11 @@
 // import containers mapped to its own post type
-import Header from '../containers/HeaderContainer';
-import Footer from '../containers/FooterContainer';
-import Home from '../containers/HomeContainer';
-import Events from '../containers/EventsContainer';
-import Menu from '../containers/MenuContainer';
-import Page from '../containers/PageContainer';
+import HeaderContainer from '../containers/HeaderContainer';
+import FooterContainer from '../containers/FooterContainer';
+import HomeContainer from '../containers/HomeContainer';
+import EventsContainer from '../containers/EventsContainer';
+import MenuContainer from '../containers/MenuContainer';
+import PageContainer from '../containers/PageContainer';
+import LocationContainer from '../containers/LocationContainer';
 
 // import components
 import Error from '../components/Error/Error';
@@ -18,17 +19,18 @@ export default function mapComponentToPostType(posttype) {
     Component = () => <Error />;
   }
 	return (<div className="page-wrapper">
-            <Header />
+            <HeaderContainer />
 	            <Component />
-	          <Footer />
+	          <FooterContainer />
           </div>)
 }
 
 // Smart components - has access to store, access all data needed from store
 const components = {
-  menu: () => <Menu />,
-  events: () => <Events />,
-  page: () => <Page />,
-  home: () => <Home />,
+  menu: () => <MenuContainer />,
+  events: () => <EventsContainer />,
+  page: () => <PageContainer />,
+  location: () => <LocationContainer />,
+  home: () => <HomeContainer />,
   error: () => <Error />
 }
