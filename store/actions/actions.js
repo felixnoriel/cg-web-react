@@ -118,7 +118,7 @@ export const getBurgerMenu = () => async dispatch => {
         burgerMenu: {},
     })
 
-    const burgerMenuPromise = await fetchGenericByRestRoute('burger_menu'); // burger_menu is mapped in WP backend - register route
+    const burgerMenuPromise = await fetchGenericByRestRoute('burger_menu'); // /burger_menu is mapped in WP backend - register route
     try{
         const burgerMenu = await burgerMenuPromise.json();
 
@@ -136,11 +136,38 @@ export const getBurgerMenu = () => async dispatch => {
     
 }
 
-export const getComments = ({posttype}) => async dispatch => {
+export const getSearch = ({searchText}) => async dispatch => {
+    dispatch({
+        type: GET_SEARCH,
+        isLoading: true,
+        searchList: [],
+        searchText: "",
+    })
 
+    const searchPromise = await fetchGenericByRestRoute('search', {q: searchText} ); // /search is mapped in WP backend - register route
+    try{
+        const search = await searchPromise.json();
+
+        dispatch({
+            type: GET_SEARCH,
+            isLoading: false,
+            searchList: search,
+            searchText: searchText,
+        })
+    }catch(err){
+        // Dispatch error message and notify front end
+        dispatch({
+            type: GET_SEARCH,
+            isLoading: false,
+            searchList: [],
+            searchText: "",
+            error: err
+        })
+    }
 }
 
-export const getSearch = ({q}) => async dispatch => {
+
+export const getComments = ({posttype}) => async dispatch => {
 
 }
 

@@ -2,7 +2,8 @@ import { Component } from 'react'
 
 import config from '../helpers/config';
 
-import { getBurgerMenu } from '../store/actions/actions';
+import { getBurgerMenu,
+         getArchive } from '../store/actions/actions';
 
 import mapComponentToPostType from './_custom';
 
@@ -27,7 +28,11 @@ class Index extends Component{
     // All data that will be used for SSR (needed for SEO) needs to be fetch here
     // fetch burger menu
     await reduxStore.dispatch(getBurgerMenu());
-    // await reduxStore.dispatch(getProjects({per_page:3, order_by: 'menu_order'}))
+
+    // just for testing, implement later on
+    await reduxStore.dispatch( getArchive("menu-category", "menu", "menu", null, {parent: 0}) );
+    await reduxStore.dispatch( getArchive("events-category", "events", "events", null, {parent: 0}) );
+    await reduxStore.dispatch( getArchive("location", "location", "location", null, null) );
 
     return { posttype: 'home' };
   }

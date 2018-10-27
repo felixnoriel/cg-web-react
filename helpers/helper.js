@@ -8,16 +8,60 @@ import Image from './Shortcodes/Image';
 // add new functions if needed
 export function modifyWordpressObject(post){
   if(!post || !post.content){ return false; }
-  let modified = Object.assign({}, post);
+  const modified = Object.assign({}, post);
 
   const mediaObj = structureFeaturedMedia(post);
   modified.custom_modified = {
+    // add custom modifications in this object
     content: extractShortcode(post.content.rendered),
     tags: structurePostTags(post),
     media: mediaObj,
     imgSrcSet: getImageSrcSet(mediaObj),
     featuredImgSrc: getImageUrl(mediaObj, 'medium_large'), // 'medium_large' is for the size of image to be returned
-    devHrefLink: getReplacedDevLink(modified.link), // change later on
+    plainHrefLink: getReplacedDevLink(modified.link), // change later on
+  }
+
+  return modified;
+}
+
+export function modifyArchiveByViewSubType(viewSubType = "items", archive){
+  if(!archive){ return; }
+
+  if(viewSubType === "items"){
+    // this returns posts/items of that category
+    // This modification is for ITEMS archive. eg: menu, events -> returns items instead of category
+    return modifyArchiveOfWordpressObject(archive);
+  
+  }else{ //assuming viewSubType is category
+
+    // This modification is for Category archive. eg: menu, events -> returns categories instead of items
+    return modifyCategoryArchiveOfWordpressObject(archive);
+  }
+}
+
+function modifyArchiveOfWordpressObject(archive){
+  const modifiedArchive = [];  
+  for( const i in archive ){
+    modifiedArchive[i] = modifyWordpressObject(archive[i]);
+  }
+  return modifiedArchive;
+}
+
+function modifyCategoryArchiveOfWordpressObject(archive){
+  const modifiedArchive = [];  
+  for( const i in archive ){
+    modifiedArchive[i] = modifyCategoryWordpressObject(archive[i]);
+  }
+  return modifiedArchive;
+}
+
+function modifyCategoryWordpressObject(category){
+  if(!category){ return false; }
+
+  const modified = Object.assign({}, category);
+  modified.custom_modified = {
+    // add custom modifications in this object
+    plainHrefLink: getReplacedDevLink(modified.link)
   }
 
   return modified;
@@ -40,8 +84,18 @@ function extractShortcode(text){
 
     text = replaceSpecialChar(text); //remove unnecessary special characters
     var parser = ShortcodeParser();
-    parser.add("img", function(opts, content){
+    parser.add("img", function(opts, content){ // this looks like [img]
         return ReactDOMServer.renderToString( <Image content={content} {...opts}/> );
+    });
+
+    // this looks like [your_short_code]
+    // opts = attributes eg: [your_short_code title="first shortcode"]
+    // content = content inside shortcode eg: [your_short_code] content here [/your_short_code]
+    parser.add("your_short_code", function(opts, content){
+        // create a function inside /Shortcodes for the layout then return it here
+        // ReactDOMServer.renderToString is for rendering it to raw HTML
+        // return ReactDOMServer.renderToString( <Image content={content} {...opts}/> );
+        return '';
     });
 
     var output = parser.parse(text);

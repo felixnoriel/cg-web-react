@@ -36,19 +36,23 @@ const MenuList = ({menuList}) => {
     }
 
     const menuListText = menuList.map( menuItem => {
-        let menuChild = "";
-        if(menuItem && menuItem.children){
-            const child = menuItem.children.map( itemChild => {
-                return ( <MenuItem key={itemChild.id} menuItem={itemChild} /> )
-            })
-            menuChild = (<ul className="menu-child"> {child} </ul>)
-        }
+
         return (<MenuItem key={menuItem.id} menuItem={menuItem}> 
-                    {menuChild} 
+                    <MenuChildList children={menuItem.children}/> 
                 </MenuItem> ); 
     });
 
     return ( <ul> {menuListText} </ul>)
+}
+
+const MenuChildList = ({ children }) => {
+    if(!children){ return ''; }
+    const childrenItems = children.map( itemChild => {
+                            return ( <MenuItem key={itemChild.id} menuItem={itemChild} /> )
+                        })
+    return (<ul className="menu-child"> 
+                { childrenItems }
+            </ul>)
 }
 
 const MenuItem = ({menuItem, children}) => {

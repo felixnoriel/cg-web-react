@@ -8,14 +8,22 @@ class ArchiveBlock extends Component{
     render(){
 
     	const { archive } = this.props;
-    	const archiveList = archive.map( archiveItem => {
-    		return <ArchiveSingleBlock key={archiveItem.id} archiveItem={archiveItem}/>
-    	})
+
+    	if( !archive || archive.length <= 0 ){
+    		return "can't map archive - empty or not an array";
+    	}
+    	
        	return (<div className="archive-container">
-       			 { archiveList }
-       			</div>
+       			      <MapArchiveList archive={archive}/>
+       			    </div>
        	)
     }
+}
+
+const MapArchiveList = ({archive}) => {
+  return archive.map( archiveItem => {
+      return <ArchiveSingleBlock key={archiveItem.id} archiveItem={archiveItem}/>
+   })
 }
 
 export default ArchiveBlock;

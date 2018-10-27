@@ -1,0 +1,20 @@
+.archive-container{
+	padding: 2em 0;;
+
+	.archive-item{
+		position: relative;
+		max-width: 300px;
+		clear: both;
+		border: solid 1px #eee;
+		display: block;
+		padding: 0.5em;
+
+		a{
+			float: left;
+		}
+		img{
+			width: 100%;
+		}
+
+	}
+}

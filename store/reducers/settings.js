@@ -4,7 +4,13 @@ import { GET_BURGER_MENU,
          SET_SETTINGS,
     } from '../actionTypes';
 
-const settings = (state = {}, action) => {
+const initialState = {
+    burgerMenu: [],
+    search: [],
+    globalSettings: {}
+}
+
+const settings = (state = initialState, action) => {
     // For immutability, it's a must to pass a new object every time
 
     switch (action.type) {
@@ -15,7 +21,11 @@ const settings = (state = {}, action) => {
     
     case GET_SEARCH :
         return  Object.assign({}, state, {
-                    search: action.search
+                    search: {
+                        searchList: action.searchList,
+                        searchText: action.searchText,
+                        isLoading: action.isLoading,
+                    }
                 });
 
     case SET_SETTINGS : 
@@ -23,7 +33,12 @@ const settings = (state = {}, action) => {
         for(let i in action.params){
             settingsObj[i] = action.params[i];
         }
-        return Object.assign({}, state, { globalSettings: settingsObj})
+        // merge globalSettings with new settingsObj
+        const globalSettings = Object.assign({}, state.globalSettings, settingsObj);
+        
+        return Object.assign({}, state, {
+            globalSettings: globalSettings,
+        });
         
     // you can put PAGE to a different reducer than settings, implement later on
     case GET_PAGE :

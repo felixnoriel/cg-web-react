@@ -1,9 +1,18 @@
 import { Component } from 'react';
 
+import './Beverage.scss';
+import PostBlock from '../../Blocks/Post/PostBlock';
+
 class BeveragePost extends Component{
 
 	render(){
-		return (<div>Beverage post</div>)
+		const { post } = this.props;
+
+		// implement your own layout here or if non return default PostBlock
+
+		return (<div className="beverage-wrapper post">
+				 <PostBlock post={post}/>
+				</div>)
 	}
 }
 

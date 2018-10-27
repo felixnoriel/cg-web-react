@@ -30,3 +30,33 @@ Backend / Wordpress
 	- Everytime you create a new post type, change the permalinks in Wordpress admin -> Settings -> Permalinks -> "Permalink Settings for Custom Post Types"
 	- permalinks is configured as /%post_type%/%post_type-category%/%postname%/ eg: drinks/spirits/margarita
 	- When adding a new category under any post type, format should always be post_type-category eg: drinks-category
+
+Note*
+- everytime you add a new post type, add it in /helpers/config -> PostTypes object
+- containers are for manipulation of data, access actions for requesting data
+	- when you need component to trigger API data (eg: via button) or access data from store, create the function in container and pass it to component
+- components are for producing layout (HTML, css, etc), access data only what is given from props
+
+
+Examples
+- / -> home page
+
+- /menu -> display categories of menu
+- /menu/food -> display categories of menu/food
+- /menu/food/main -> display items of menu/food/main
+- /menu/food/main/cheeseburger -> display post of cheeseburger
+
+- /location -> display items of /location
+- /location/nsw -> display items of /location/nsw
+- /location/nsw/castle-hill -> display post of castle hill location
+
+- /events -> display categories of events
+- /events/birthday -> display items of events/birthday
+- /events/birthday/birthday-package -> display post of birthday-package
+
+- /search?q=burger -> display search results based from 'q' param
+
+Examples how to use
+- async redux dispatch
+	- implemented in search (DefaultContainer) -> getSearch()
+

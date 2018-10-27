@@ -26,7 +26,7 @@ class Post extends Component{
   static async getInitialProps ({ req, reduxStore, pathname, params, query, asPath }) {
     const posttype = query.posttype;
     let posttypeObj = posttype;
-    if(posttype === 'favicon.ico' || !posttype ){ return false; }
+    if( !posttype || posttype === 'favicon.ico'){ return false; }
 
     /* NOTES
        - All data that will be used for SSR (needed for SEO) needs to be fetch here
@@ -38,82 +38,133 @@ class Post extends Component{
 
     if ( config.PostTypes.indexOf(posttype) > -1 ) { // first layer URL is a post type
       
-      if(posttype === "menu" || posttype === "events"){ 
-        // menu and events are configured to get their categories NOT their item unless it's a subcategory
+      if(posttype === "menu"){ 
+        // menu is configured to get their categories NOT their item unless it's a subcategory
 
         let category = query.category;
         let subCategory = query.slug;
         let slug = query.twoslug; // check three slug as well if it exists later on - subcategory might be two layers
         const categoryName = `${posttype}-category`;
-
-        // set global settings based on url mapping
-        await reduxStore.dispatch(setWebSettings({posttype: posttype, category: category, subCategory: subCategory, slug: slug}));
-
-        if (posttype === "events") { // events is only three layers -> /events/wedding/package-1
-          category = query.category;
-          slug = query.slug; // check three slug as well if it exists later on - subcategory might be two layers
-        }
-
+        const urlSettings = {
+          posttype: posttype,
+          category: category,
+          subCategory: subCategory,
+          slug: slug
+        };
+        let viewSettings = {}; // to be merged to globalWebSettings later
         
-        if(slug){ 
-          // get post -> /menu/food/main/cheeseburger
+        if(slug){  // get post -> /menu/food/main/cheeseburger
           await reduxStore.dispatch(getPost(posttype, slug));
-        
-        }else if(subCategory){ 
-          // get third layer list ITEMS of post type -> /menu/food/main
-          const categoryId = await getCategoryId(posttype, subCategory);
-          if(categoryId > 0){
-              await reduxStore.dispatch( getArchive(posttype, posttype, category, subCategory, { [categoryName]: categoryId }) );
+          
+           // set view settings
+          viewSettings = { viewType: 'post', viewBy: slug, };
+
+        }else if(subCategory){  // get third layer list ITEMS of post type -> /menu/food/main
+          const categoryChecker = await checkCategoryIfExists(posttype, subCategory);
+          if(categoryChecker && categoryChecker.id > 0){
+              await reduxStore.dispatch( getArchive(posttype, posttype, category, subCategory, { [categoryName]: categoryChecker.id }) );
+
+              // set view settings
+              viewSettings = { viewType: 'archive', viewBy: category, viewSubType: "items", };
           }
         
-        }else if(category){ // this would look like 
+        }else if(category){ // get second layer list CATEGORY of post type -> /menu/food
+          const categoryChecker = await checkCategoryIfExists(posttype, category);
+          if(categoryChecker && categoryChecker.id > 0){
+              // /menu/food/main -> returns list of categories of main
+              await reduxStore.dispatch( getArchive(categoryName, posttype, category, subCategory, {parent: categoryChecker.id }) );
 
-          // get second layer list CATEGORY of post type -> /menu/food
-          const categoryId = await getCategoryId(posttype, category);
-          if(categoryId > 0){
-              await reduxStore.dispatch( getArchive(categoryName, posttype, category, subCategory, {parent: categoryId }) );
+              // set view settings
+              viewSettings = { viewType: 'archive', viewBy: categoryChecker.slug, viewSubType: "category", };
           }
           
-        }else{
-          // get first layer list CATEGORY of post type -> /menu
+        }else{ // get first layer list CATEGORY of post type -> /menu
           await reduxStore.dispatch( getArchive(categoryName, posttype, posttype, subCategory, { parent: 0 }) );
+
+          // set view type in global settings
+          await reduxStore.dispatch(setWebSettings({ viewType: 'archive', viewBy: posttype }));
         }
 
-      }else{ // other post types are configured to get ITEMS only and not its categories
+        // set global settings
+        const finalSettings = Object.assign({}, urlSettings, viewSettings); // merge the two settings
+        await reduxStore.dispatch(setWebSettings(finalSettings));
+
+      
+
+      }else{ /* start to: post type !== "menu"  */
+        // other post types are configured to get ITEMS only and not its categories
         const category = query.category;
         const slug = query.slug;
         const twoslug = query.twoslug; // fourth layer URL -> /location/nsw/cbd/darlingharbour -> implement this later on
         const categoryName = `${posttype}-category`;
+        const urlSettings = {
+          posttype: posttype,
+          category: category,
+          subCategory: null, // change if exists
+          slug: slug
+        };
 
-        // set global settings based on url mapping
-        await reduxStore.dispatch(setWebSettings({posttype: posttype, category: category, subCategory: null, slug: slug}));
+        let viewSettings = {}; // to be merged to globalWebSettings later
 
-        if(slug){
+        if(slug){ // eg: /location/nsw/castle-hill, /events/birthday/package-1
           await reduxStore.dispatch(getPost(posttype, slug));
 
-        }else if(category){
-          const categoryId = await getCategoryId(posttype, category);
-          if(categoryId > 0){
-              await reduxStore.dispatch( getArchive(posttype, posttype, category, null, { [categoryName]: categoryId }) );
+          // set view type in global settings
+          await reduxStore.dispatch(setWebSettings({ viewType: 'post', viewBy: slug }));
+           // set view settings
+          viewSettings = { viewType: 'post', viewBy: slug, };
+
+        }else if(category){ //eg: /location/nsw, /events/birthday
+
+          const categoryChecker = await checkCategoryIfExists(posttype, category);
+          if(categoryChecker && categoryChecker.id > 0){
+              await reduxStore.dispatch( getArchive(posttype, posttype, category, null, { [categoryName]: categoryChecker.id }) );
+          }
+          // set view settings
+          viewSettings = { viewType: 'archive', viewBy: categoryChecker.slug, viewSubType: "items", };
+
+        }else{ // eg: /location, /events
+
+          // set view settings
+          viewSettings = { viewSubType: "items", viewType: 'archive', viewBy: posttype, };
+          if(posttype === "events"){
+            // events return a list of its CATEGORY and not items
+            await reduxStore.dispatch( getArchive(categoryName, posttype, posttype, null, {parent: 0}) );
+            viewSettings.viewSubType = "category";
+            
+          }else{
+            // other post types returns a list of ITEMS based from post type
+            await reduxStore.dispatch( getArchive(posttype, posttype, posttype, null, null) );
           }
 
-        }else{
-          await reduxStore.dispatch( getArchive(posttype, posttype, posttype, null, null) );
         }
+
+        // set global settings
+        const finalSettings = Object.assign({}, urlSettings, viewSettings); // merge the two settings
+        await reduxStore.dispatch(setWebSettings(finalSettings));
 
       }
     
-    } else { 
-      // Not a post type - check if page
+    } else {  /** start: not a post type, might be a page or search **/
+      if(posttype === "search"){
+        // redirect to DefaultContainer -> Search component
+        // Search results will be async and doesn't need to be SEO
+        await reduxStore.dispatch(setWebSettings({posttype: 'search', searchText: query.q}));
+        return { posttype: 'search' };
+      }
+
       const slug = posttype;
       await reduxStore.dispatch( getPage(slug) ); // posttype = first layer of URL; assume it's the slug of the page
       const page = reduxStore.getState().settings.page; // check if there was a page object returned from the API request 
       posttypeObj = 'page';
+
+      // set global settings based on url mapping
+      await reduxStore.dispatch(setWebSettings({posttype: posttype, category: category, subCategory: null, slug: slug,
+                                                viewType: 'page', viewBy: slug}));
+      
       if( !page || page === null || page === undefined || page.length <= 0 ){ // if no page object was returned, return error 404
         return { posttype: 'error' };
       }
-      // set global settings based on url mapping
-        await reduxStore.dispatch(setWebSettings({posttype: posttype, category: category, subCategory: null, slug: slug}));
     }
 
     return { posttype: posttypeObj }; // return a post type object to check what kind of component to return below
@@ -126,11 +177,11 @@ class Post extends Component{
 }
 
 // this will return the ID of category if it exists
-async function getCategoryId(posttype, category){
+async function checkCategoryIfExists(posttype, category){
   const categories = await getCategoriesByPostType(`${posttype}-category`);
   for(const cat of categories){
     if(cat.slug === category){
-      return cat.id;
+      return cat;
       break;
     }
   }

@@ -1,0 +1,26 @@
+.search-bar{
+	position: absolute;
+	right: 1rem;
+	top: 1rem;
+	border: 1px solid grey;
+	padding: 1rem;
+	span{
+		font-size: 25px;
+	}
+	input{
+		width: 300px;
+		height: 20px;
+	}
+}
+h1.results, .loading-search{
+	padding: 2em 0em;
+}
+.search-wrapper{
+	padding: 2em 0;
+
+	.results{
+		border: solid 1px grey;
+		padding: 1em 0;
+	}
+}
+

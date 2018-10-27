@@ -1,25 +1,48 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 
+import { modifyWordpressObject,
+		 modifyArchiveByViewSubType, } from '../helpers/helper';
 import EventsArchive from '../components/Events/EventsArchive';
 import EventsPost from '../components/Events/EventsPost';
 
 class EventsContainer extends Component{
 
+
 	render(){
-		const { eventsArchive, eventsPost } = this.props;
+		const { eventsArchive, eventsPost, globalSettings } = this.props;
+		console.log(this.props);
+		if( globalSettings.viewType === "archive"){
+			
+			// pass the archive object based on the view by in settings
+			const archiveToPass = eventsArchive[globalSettings.viewBy].archive;
 
-		// pass needed data to events as props
-		if(eventsArchive){
-			return <EventsArchive eventsArchive={eventsArchive}/>
-		}
-		if(eventsPost){
-			return <EventsPost eventsPost={eventsPost}/>
-		}
+			const modifiedArchive = modifyArchiveByViewSubType(globalSettings.viewSubType, archiveToPass);
+			// Always use helper.modifyWordpressObject when using wordpress data to make it standard
+            // use modifiedWPObj.custom_modified for details like content, tags, images, add more if needed
+            // make sure you modify the object before passing it to a component to avoid multiple modification
+			return <EventsArchive globalSettings={globalSettings} archive={modifiedArchive}/>
 
-		// This could return Error page - 404, implement later on
-		return ( <div>No events archive or post</div>);
+		}else if( globalSettings.viewType === "post"){
+			
+			// pass the post object based on the view by in settings
+			const postToPass = eventsPost[globalSettings.viewBy].post[0]; // it's an array, so pass the first index
+
+			
+			// Always use helper.modifyWordpressObject when using wordpress data to make it standard
+	      	// use modifiedWPObj.custom_modified for details like content, tags, images, add more if needed
+	      	// make sure you modify the object before passing it to a component to avoid multiple modification
+	    	const modifiedWPObj = modifyWordpressObject(postToPass);
+
+			// pass additional data if needed
+			return <EventsPost globalSettings={globalSettings}  post={modifiedWPObj}/>
+
+		}
+		
+		// this could return Error page - 404, implement later on
+		return ( <div>Invalid or not implemented globalSettings view type</div>);
 	}
+
 }
 
 const mapStateToProps = state => ({
